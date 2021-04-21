@@ -47,4 +47,44 @@ function editSVG(json){
 //    href = href.split("@")[0] + "@" + obj.newValue;
 //
 //    use.attr({ "xlink:href": href});
+   var obj = $.parseJSON(json);
+   for(var i = 0; i < obj.length; i++){
+        Snap.selectAll("powerdata").forEach(function(arg){
+            if(arg.attr("stationname") == obj[i]['StationName'] && arg.attr("pointname") == obj[i]['DevName']){
+              var use = arg.parent().parent().select("use");
+              if(use != undefined){
+                  var href = use.attr("xlink:href");
+                  href = href.split("@")[0] + "@" + obj[i]['DeviceStatus'];
+                  use.attr({ "xlink:href": href});
+              }
+            }
+        });
+        Snap.selectAll("shaperef").forEach(function(arg){
+            if(arg.attr("scriptname") == obj[i]['DevName']){
+              var tspan = arg.parent().parent().select("tspan");
+              if(tspan != undefined){
+                  var name = obj[i]['DevName'].split("_")[1];
+                  var status = obj[i]['DeviceStatus'];
+                  if(name == "door"){
+                     var text = status == 0 ? "关闭" : "打开";
+                     tspan.attr({"#text": text});
+                  }else if(name == "bolt"){
+                     var text = status == 0 ? "打开" : "关闭";
+                     tspan.attr({"#text": text});
+                  }else if(name == "connect"){
+                     var text = status == 0 ? "正常" : "异常";
+                     tspan.attr({"#text": text});
+                  }else if(name == "lock"){
+                     if(status == 0){
+                        tspan.attr({"#text": "无密码"});
+                     }else if(status == 1){
+                        tspan.attr({"#text": "远方闭锁"});
+                     }else{
+                         tspan.attr({"#text": "巡检密码"});
+                     }
+                 }
+              }
+            }
+        });
+   }
 }

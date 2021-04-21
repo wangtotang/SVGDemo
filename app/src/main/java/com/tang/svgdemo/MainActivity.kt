@@ -14,6 +14,7 @@ import android.view.View
 import android.webkit.*
 import androidx.annotation.RequiresApi
 import androidx.core.hardware.fingerprint.FingerprintManagerCompat
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONObject
 import org.xml.sax.XMLReader
@@ -120,10 +121,29 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("NewApi")
     fun onChange(view: View){
-        var json = JSONObject()
-        json.put("id", "270575")
-        newValue = if (newValue == "0") "6" else "0"
-        json.put("newValue", newValue)
+//        var json = JSONObject()
+//        json.put("id", "270575")
+//        newValue = if (newValue == "0") "6" else "0"
+//        json.put("newValue", newValue)
+        val connect = EventData()
+        connect.stationName = "官桥站"
+        connect.devName = "m3_connect"
+        connect.deviceStatus = 1
+
+        val bolt = EventData()
+        bolt.stationName = "官桥站"
+        bolt.devName = "m3_bolt"
+        bolt.deviceStatus = 1
+
+        val lock = EventData()
+        lock.stationName = "官桥站"
+        lock.devName = "m2_lock"
+        lock.deviceStatus = 1
+
+        var arrayListOf = arrayListOf<EventData>(connect, bolt, lock)
+
+        var json = Gson().toJson(arrayListOf)
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
             webView.post {
                 webView.loadUrl("javascript:editSVG('$json')")
@@ -159,7 +179,7 @@ class MainActivity : AppCompatActivity() {
         fun getJson(): String {
             var str = ""
             try {
-                val fis = context.assets.open("3-官桥.svg")
+                val fis = context.assets.open("香港地铁演示")
 
                 val baos = ByteArrayOutputStream()
 
